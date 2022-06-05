@@ -1,9 +1,0 @@
-def func():
-    a, b = input().split()
-    a, b = int(a), int(b)
-    c = int(input())
-    total_time = a*60+b+c
-    print(f"{total_time//60%24} {total_time%60}")
-
-if __name__ == "__main__":
-    func()
