@@ -1,3 +1,4 @@
+````
 def func():
     num1, num2 = input().split()
     num1, num2 = int(num1), int(num2)
@@ -10,3 +11,4 @@ def func():
 
 if __name__ == "__main__":
     func()
+````
