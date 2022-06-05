@@ -1,0 +1,12 @@
+def func():
+    h, m = input().split()
+    h, m = int(h), int(m)
+    if m >= 45:
+        print(f"{h} {m-45}")
+    elif h == 0 and m < 45:
+        print(f"23 {m+15}")
+    else:
+        print(f"{h-1} {m+15}")
+
+if __name__ == "__main__":
+    func()
