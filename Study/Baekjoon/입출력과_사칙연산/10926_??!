@@ -1,6 +1,0 @@
-def func():
-    id = input()
-    print(id + '??!')
-
-if __name__ == "__main__":
-    func()
