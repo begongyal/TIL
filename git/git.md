@@ -36,6 +36,14 @@ rebase에 대해서 아직 잘 모르겠다.
 <br/>
 <br/>
 
+```git add {filename}```
+을 통해서 파일들을 tracked되게 만들고,
+```git status```
+를 통해 상태를 확인할 수 있다.
+
+<br/>
+<br/>
+
 ```git pull``` = ```git fetch``` followed by ```git merge```  
 ```git fetch```는 git에서 관리하는 버전 관리 정보만 업데이트하기 때문에 작업중인 파일은 건드리지 않음.  
 ```git merge```를 하면 그때서야 ```fetch```를 통해 가져왔던 업데이트 정보를 반영하면서 합병함.
