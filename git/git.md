@@ -40,6 +40,10 @@ rebase에 대해서 아직 잘 모르겠다.
 을 통해서 파일들을 tracked되게 만들고,
 ```git status```
 를 통해 상태를 확인할 수 있다.
+```git commit -m {commit message}```
+를 통해서 tracked된 파일들을 로컬 저장소에 commit할 수 있고, 이제부터
+```git push origin {로컬저장소의 branch_name}```
+을 통해서 로컬 저장소에서 원격 저장소로 옮길 수 있다.
 
 <br/>
 <br/>
