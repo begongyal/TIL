@@ -12,6 +12,12 @@ rebase에 대해서 아직 잘 모르겠다.
 = ```git init + git remote add origin {URL} + git pull origin {branch이름}```  
 이지만 아랫줄은 해당 브랜치를 가져오는건 아니고 그냥 그 브랜치 안에 있는 파일들만 복사해서 가져오는 것.
 
+```git clone {URL}```
+으로만 해도 일단 origin을 {URL}로 설정함.
+
+```git remote -v```
+를 하면 원격 저장소를 볼 수 있음
+
 <br/>
 <br/>
 
