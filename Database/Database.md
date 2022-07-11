@@ -36,4 +36,4 @@ an explicit START TRANSACTION or BEGIN statement and ending it with a COMMIT or 
 
 ---------------------------
 
-Read uncommitted, Read committed, Repeatable read, serializable에 대해서 추후에 
+Read uncommitted, Read committed, Repeatable read, serializable에 대해서 추후에 추가 
