@@ -30,7 +30,7 @@ rebase에 대해서 아직 잘 모르겠다.
 ```git checkout {branch_name}```
 하면 branch_name으로 전환함.
 
-```git branch -b {branch_name}```
+```git checkout -b {branch_name}```
 하면 branch_name을 이름으로 하는 branch를 만들면서 전환함.
 
 <br/>
