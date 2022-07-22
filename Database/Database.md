@@ -52,3 +52,17 @@ an explicit START TRANSACTION or BEGIN statement and ending it with a COMMIT or 
 ---------------------------
 
 Read uncommitted, Read committed, Repeatable read, serializable에 대해서 추후에 추가 
+
+
+MySQL 서비스 시작
+sudo systemctl start mysql.service
+
+MySQL 서비스 중지
+sudo systemctl stop mysql.service
+
+MySQL 서비스 재시작
+sudo systemctl restart mysql.service
+
+MySQL 서비스 상태 검사
+sudo systemctl status mysql.service
+
