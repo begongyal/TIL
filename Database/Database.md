@@ -1,3 +1,18 @@
+Foreign key 이름 확인하는 방법
+
+```
+SELECT 
+  TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+FROM
+  INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE
+  REFERENCED_TABLE_SCHEMA = 'illerBachgi_test' AND
+  REFERENCED_TABLE_NAME = 'illustrator';
+```
+
+---------------------
+
+
 Foreign Key 삭제
 
 ```
