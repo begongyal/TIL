@@ -1,0 +1,30 @@
+Apache
+
+lightsail에서 웹 서버를 구동하는 방법.
+Apache 웹 서버가 기본으로 설치되어있다.
+
+/etc/apache2/sites-available 디렉토리에
+000-default.conf, default-ssl.conf 파일이 있다.
+
+000-default.conf는 http 연결을 위한 conf 파일로, 
+들어가보면 80번 포트로 연결되어 있는 걸 볼 수 있고, DocumentRoot는 /var/www/html로 되어있다.
+그 경로로 들어가보면 apache2 기본 페이지 html파일이 들어가있다.
+
+default-ssl.conf는 https 연결을 위한 conf 파일로,
+들어가보면 000-default.conf 파일엔 없던 IfModule이 있다.(이게 뭔지는 모르겠다.)
+그리고 443번 포트로 연결되어 있는 걸 볼 수 있고, DocumentRoot는 /var/www/html로 되어있다.
+SSLEngine은 on으로 되어있다. (안되어있다면 SSL 적용할 수 없어서 나중에 적용이 필요할때
+https://blogger.pe.kr/824 참고하면 된다고 함.)
+
+둘 다 공통으로 DocumentRoot에는 실행하고 싶은 웹 서비스 파일들(html 등)이 들어있는 디렉토리를 적으면 된다.
+
+우리가 react 등으로 개발한 웹 사이트를 lightsail apache2 웹 서버를 이용해서 배포하고 싶은 경우에는
+두 가지 방법이 있다.
+A. 000-default.conf의 DocumentRoot를 /var/www/html에서 [build 디렉토리 존재하는 경로] (ex. /var/www/illerbachgi/build/)로 바꿔주고
+systemctl apache2 reload를 해주면 된다. (react로 개발했을때는 npm run build 명령어로 build 디렉토리를 만들 수 있음)
+B. 혹은 새로 conf 파일을 만들어서 (ex. illerbachgi.conf), 000-default.conf의 내용을 그대로 복사해오고 DocumentRoot만 A방법에서 한것처럼 바꿔주면 된다.
+그리고 a2dissite 000-default.conf, a2ensite illerbachgi.conf 의 두 번의 명령어를 입력해서 apache2서버가 사용할 conf파일을 재설정해주고
+systemctl apache2 reload로 서버 conf파일을 업데이트한다.
+
+B 방법을 사용하면 좋은 점은, 다양한 웹 서비스를 개발하였을 때, a2ensite, a2dissite를 이용해서 개발한 웹 서버 소스코드를 삭제하고 복사해오고 할 필요 없이
+apache2 웹 서버가 사용할 conf파일만 수정해주면 언제든 서비스를 갈아끼울 수 있다는 것이다.
