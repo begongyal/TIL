@@ -1,0 +1,19 @@
+AWS의 route53에서 illerbachgi.com을 1년에 12$(수수료포함 18000원)에 샀다.
+
+우리는 AWS의 lightsail 서버를 이용중이어서
+(lightsail->Networking -> Create DNS Zone에서 도메인을 연결하고
+생성된 Name server를 Route53에 넣어주었다.
+
+@.illerbachgi.com을 subdomain으로 A record를 만들면
+illerbachgi.com으로 연결 가능(@가 생략인듯)
+
+www.illerbachgi.com을 subdomain으로 A record를 만들면
+www.illerbachgi.com로.
+
+그래서 웹사이트가 illerbachgi.com으로 연결가능해졌다.
+
+기업 메일을 만들기 위해서 domain mail hosting을 사용했다.
+improvmx에서 무료로 제공하는 기능을 사용해서
+~~@illerbachgi.com으로 오는 메일을 ~~@gmail.com 으로 오도록 할 수 있었고,
+
+gmail.com에서 메일 보낼때도 상대방에게 illerbachgi.com 이메일로부터 온 것처럼 보이게도 할수 있다.(이건 gmail 자체 무료기능)
