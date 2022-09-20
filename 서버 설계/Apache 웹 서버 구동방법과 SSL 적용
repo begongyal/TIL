@@ -1,4 +1,4 @@
-Apache
+[Apache]
 
 lightsail에서 웹 서버를 구동하는 방법.
 Apache 웹 서버가 기본으로 설치되어있다.
@@ -56,3 +56,16 @@ IMPORTANT NOTES:
 6. blogger 참고 링크의 중간부터 이어서 따라했다. /etc/apache2/sites-available/000-default-ssl.conf 를 복사해서 illerbachgi-ssl.conf로 만들어도 되었겠지만, 그냥 그대로 수정하기로 하고 진행했다. conf파일 중간에 SSLEngine이 on으로 되어있는 것을 확인하고, SSLCertificateFile,KeyFile,ChainFile을 링크 내용 그대로 cert.pem, privkey.pem, chain.pem의 경로로 수정해주었다. (fullchain.pem은 실컷 만들어놓고 왜 안쓰는지는 모르겠음) 그리고 a2ensite로 conf파일 사용하도록 해주고 reload하면 적용이 되어있다.
 
 7. Lightsail에서 443 포트를 방화벽에서 열어주었는지도 꼭 확인하자.
+
+
+
+
+
+[SSL 적용 후 http 연결을 모두 https로 돌리는 방법]
+현재 http연결로 적용되고 있는 conf 파일(ex. 000-default.conf) 안에 다음과 같은 내용을 추가로 적어준다.
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+참고: https://oingdaddy.tistory.com/68
+(https://blogger.pe.kr/824는 따라하지말것)
