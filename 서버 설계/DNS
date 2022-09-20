@@ -15,5 +15,9 @@ www.illerbachgi.com로.
 기업 메일을 만들기 위해서 domain mail hosting을 사용했다.
 improvmx에서 무료로 제공하는 기능을 사용해서
 ~~@illerbachgi.com으로 오는 메일을 ~~@gmail.com 으로 오도록 할 수 있었고,
+(구글링 해봤을때는 Route53에서 산 도메인을 사용해서 improvmx로 기업 메일을 사용하기 위해서는
+Route53에 mx record를 만들라고 했었는데, 실제로 우리는 route53에서 아무리 mx record를 만들어도
+설정이 되지 않았다. whoisdns 사이트나 windows의 nslookup이나 linux의 dig 등을 통해서 확인해보았으나 안되었음.
+그래서 lightsail의 DNS records 안에서 Add record를 해주었더니 귀신같이 됨.)
 
 gmail.com에서 메일 보낼때도 상대방에게 illerbachgi.com 이메일로부터 온 것처럼 보이게도 할수 있다.(이건 gmail 자체 무료기능)
