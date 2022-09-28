@@ -87,3 +87,16 @@ DB 로그에 다 찍힌다고 함)
 https://velog.io/@sim0297/%EC%84%9C%EB%B2%84-%EC%9D%B8%EC%A6%9D-%EB%B0%A9%EB%B2%951HTTPSessionCookieJWT
 
 
+--------------------------------
+
+[웹 서비스를 위한 구조 설계]
+
+우리의 웹 서비스를 위한 시스템 설계는 다음과 같이 이루어졌다.
+
+Client          - Apache2(Web Server)    - WAS(Web Application Server)     - Database
+{Google Chrome} - {React}                 {WSGI Server + Web Application}  - {Mysql}
+
+1. 일반적으로 웹 서비스(혹은 웹 페이지)를 만들 때의 구조: 
+Client(웹 브라우저) - 
+
+
