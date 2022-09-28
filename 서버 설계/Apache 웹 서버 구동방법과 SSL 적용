@@ -25,6 +25,9 @@ systemctl apache2 reload를 해주면 된다. (react로 개발했을때는 npm r
 B. 혹은 새로 conf 파일을 만들어서 (ex. illerbachgi.conf), 000-default.conf의 내용을 그대로 복사해오고 DocumentRoot만 A방법에서 한것처럼 바꿔주면 된다.
 그리고 a2dissite 000-default.conf, a2ensite illerbachgi.conf 의 두 번의 명령어를 입력해서 apache2서버가 사용할 conf파일을 재설정해주고
 systemctl apache2 reload로 서버 conf파일을 업데이트한다.
+a2ensite 명령어는 /etc/apache2/sites-available에 있는 conf 파일을 /etc/apache2/sites-enabled로 복사하고 항상 동기화시킨다.
+그러므로 a2ensite를 한번 해주면, sites-available 안에 있는 conf 파일을 수정한다고 다시 a2ensite 할 필요가 없다. (자동으로 sites-enabled에도 적용됨)
+a2dissite 명령어는 sites-enabled에서 conf 파일을 삭제한다.
 
 B 방법을 사용하면 좋은 점은, 다양한 웹 서비스를 개발하였을 때, a2ensite, a2dissite를 이용해서 개발한 웹 서버 소스코드를 삭제하고 복사해오고 할 필요 없이
 apache2 웹 서버가 사용할 conf파일만 수정해주면 언제든 서비스를 갈아끼울 수 있다는 것이다.
