@@ -96,7 +96,124 @@ https://velog.io/@sim0297/%EC%84%9C%EB%B2%84-%EC%9D%B8%EC%A6%9D-%EB%B0%A9%EB%B2%
 Client          - Apache2(Web Server)    - WAS(Web Application Server)     - Database
 {Google Chrome} - {React}                 {WSGI Server + Web Application}  - {Mysql}
 
-1. 일반적으로 웹 서비스(혹은 웹 페이지)를 만들 때의 구조: 
-Client(웹 브라우저) - 
+1. 일반적으로 웹 서비스(혹은 웹 페이지)를 만들 때의 구조는 아래와 같다.
+
+클라이언트 - 웹 서버 - WAS - DB
+
+웹 서버는 Nginx, Apache 등이 있고, 정적인 컨텐츠(html 코드, 이미지 파일 등)를 클라이언트에게 제공한다.
+동적인 컨텐츠는 웹 서버만으로는 제공할 수 없다.
+
+2. 
+CGI: Common Gateway Interface.
+과거에는 웹 서버는 동적 컨텐츠를 클라이언트에게 제공해줄 수 없으므로, CGI라는 인터페이스를 통해서 외부 프로그램(웹 애플리케이션)을 직접 실행해야했다.
+그러나 요즘에는 웹 서버 자체에 인터프리터를 내장시키고 프로세스를 fork하여 외부 프로그램 실행 대신 내부에서 처리한다.
+
+3.
+Web Server + CGI = WAS
+동적으로도 작동하는 웹 서버가 WAS이다. Tomcat, WebLogic, WebSphere, Jeus, JBoss 등이 있다.
+아파치를 기준으로 설명하면
+클라이언트가 동적 컨텐츠를 요청하면 Apache HTTP Server(httpd, 즉 아파치 웹 서버)가 그 요청을 받아서 Apache Tomcat(WAS)에게 전달하고,
+WAS는 외부 프로그램(Web Application)을 실행한다.
+
+이렇게 설명하면, 1번에서 웹 서버와 WAS를 구별해서 적어두었고, 3번에서는 WAS가 Web Server를 포함하는 것으로 적었기 때문에 헷갈릴 수 있다.
+물론 WAS가 동적인 컨텐츠를 제공하기 위해서 사용되는만큼, 당연히 정적인 컨텐츠도 클라이언트에게 반환할수있다.
+하지만 https://doozi316.github.io/web/2020/09/13/WEB26/ 에 따르면 그럼에도 불구하고 웹 서버가 정적인 컨텐츠를,
+WAS가 동적인 컨텐츠 만을 반환하게 해서 일을 분배해야 효율적이라고 한다.
+
+※CGI, 어플리케이션 서버 방식의 차이
+접속자가 많은 서비스의 경우 CGI 방식보다 어플리케이션 서버 방식의 Throughput(처리량)이 더 좋습니다.
+예를들어, 5개의 웹 브라우저가 동일한 프로그램을 요청했을 때 CGI 방식은 5개의 요청에 대한 프로그램을 모두 메모리에 적재합니다.
+반면, 어플리케이션 서버방식은 메모리에 한번만 적재합니다. 이로써 CGI방식에 비해 전체적인 메모리 사용량이 적습니다. 이는 더 많은 요청을 처리할 수 있음을 의미합니다.
+출처: https://brownbears.tistory.com/350
+
+4.
+Python으로 웹 애플리케이션을 구현한 경우에 우선 당연히 웹 서버(apache)와 웹 애플리케이션(flask)는 서로 요청을 직접 주고받을 수 없다. (프로토콜이 없기 때문)
+그리고 앞서 언급한 WAS(Web server + CGI, ex. Tomcat 등)도 해당 애플리케이션을 구동하지 못한다. 그래서 Python 한정으로, 
+WSGI(Web Server Gateway Interface)라는 다른 인터페이스를 사용한다. 그리고 WSGI Server는 WSGI 인터페이스를 웹 서버와 웹 애플리케이션이 서로 소통할 수 있도록
+사이에서 서버 역할을 한다.(ex. gunicorn, apache의 mod_wsgi 등) 즉, Python으로 웹 애플리케이션을 짠 경우에는 WAS가 WSGI Server + Web Application으로 구성된다.
+
+클라이언트가 웹 서버에게 어떤 페이지를 요청하면, 웹 서버는 그 페이지를 만들기 위해 필요한 컨텐츠들 중에서 정적인 컨텐츠는 자기가 직접 응답하고
+동적인 컨텐츠는 WSGI Server에게 요청하게 된다.
+WSGI Server는 Python으로 구현된 웹 애플리케이션(당연히 이 애플리케이션도 WSGI 인터페이스를 제공해야함.
+Flask, Django는 WSGI 인터페이스를 제공함)을 직접 실행시켜서 얻은 결과를 다시 클라이언트에게 전달한다.
+
+5.
+그렇다면 왜 클라이언트가 동적인 컨텐츠를 요청하기 위해서 직접 WSGI Server에 요청하지 않고, 웹 서버에 대신 요청해야할까?
+-> WSGI 서버로 mod_wsgi를 쓰는 경우와 gunicorn을 쓰는 경우로 나누어서 설명한다.
+a. mod_wsgi를 쓰는 경우.
+apache web server(httpd)를 사용하고, WSGI가 굳이 다른 서버 컴퓨터 환경에서 돌아갈 필요가 없을 때이다.
+아파치가 mod_wsgi라는 WSGI Server를 직접 실행해서, mod_wsgi가 web application을 실행하게 한다.
+(사실 이 경우에는 클라이언트가 직접 WSGI 서버에 요청하는 방법은 아직 모르겠다. 어쨌든,)
+이러면 아파치 웹서버와 mod_wsgi는 같은 컴퓨터 환경 내에서 돌아가기 때문에 HTTP같은 통신이 필요하지 않는다.
+apache configuration 설정에서 WSGI Alias를 /api --> /{some_paths}/wsgi.wsgi (이 wsgi파일은 flask web application과 연동되어있음)로 돌려줄 수 있는데, 이러면 
+클라이언트가 아파치 웹서버에 동적 컨텐츠 요청할때 illerbachgi.com:80/api/get_samples 요청을
+wsgi server로 돌려주고, wsgi server가 flask application을 실행한다. flask가 응답하면 wsgi서버가 받아서 클라이언트에게 전달한다.
+(아직 잘 모르겠는점: flask의 응답을 wsgi서버가 받았을때, apache web server에 다시 전달하고, 웹 서버가 클라이언트에게 주는가? 아니면
+wsgi서버가 바로 클라이언트에게 주는가?)
+
+b. gunicorn을 쓰는 경우.
+gunicorn은 apache web server가 실행하는게 아니라 독자적인 서버처럼 포트를 열고 돌아간다.
+그래서 클라이언트는 동적 컨텐츠가 필요할때 gunicorn의 포트에 접근해서 요청을 날릴 수 있다.
+하지만 이러면, web server로부터 80번포트를 통해 받아오던 다른 정적 컨텐츠와 달리, 포트 번호가 다른 낯선 출처로부터 컨텐츠를 받아왔다고
+웹 브라우저가 판단하기 때문에 CORS policy를 위반했다며 에러가 나게 된다.
+그래서 ProxyPass, ProxyPassReverse를 apache config파일에 설정해서 /api/~~로 들어오는 요청을 :{gunicorn_port}/~~로 돌려야 한다.
 
 
+
+[ 실습 ]
+
+1. sudo apt-get install libapache2-mod-wsgi-py3 로 mod_wsgi 설치. py3를 뒤에 꼭 붙여줘야 python2버전으로 안깔고 python3 버전으로 깐다.
+
+2. /var/www/ 안의 어딘가에(이번에는 DocumentRoot가 /var/www/illerbachgi/build여서 /var/www/illerbachgi/was 경로로 정했음.
+원래는 완전 아무데나 다 되는줄 알았는데 /home/begongyal/ 아래에서는 실패했음. 왜인지는 모르겠음. 아마도 권한 문제)
+app.py(flask로 만든 web application), wsgi.wsgi(그냥 확장자가 wsgi면 됨)의 두 파일을 만든다.
+
+3. app.py는 
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "hello"
+    
+이런식으로 구성하면 된다. 중요한건
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
+이 코드가 필요가 없다. 왜냐하면 이건 development용으로 flask 자체 서버로 돌리는 것이다. 그런데 우리는 WSGI서버로 돌릴 것이기 때문에 필요없다.
+
+
+4. wsgi.wsgi는
+
+import sys
+sys.path.insert(0, "/var/www/illerbachgi/was")
+from app import app as application
+
+이렇게 구성하면 된다. 
+from app에서의 app은 app.py의 이름인 app이고
+import app의 app은 app = Flask(__name__)의 app이다.
+as application은 고정이라고 생각하면 된다. 
+참고: 이것은 컨벤션임. 이름을 application으로 안하고 다른걸로 해도 되지만,
+그러면 귀찮게 설정해줘야되는 것이 많으니까 그렇게 안하는게 좋다고 공식 문서에서 그랬음.
+
+Note that mod_wsgi requires that the WSGI application entry point be called ‘application’.
+If you want to call it something else then you would need to configure mod_wsgi explicitly to use the other name.
+Thus, don’t go arbitrarily changing the name of the function.
+If you do, even if you set up everything else correctly the application will not be found.
+출처: https://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html
+
+
+5. 이제 app.py, wsgi.wsgi가 준비되었으므로 /etc/apache2/sites-available에 있는 현재 사용중인 conf파일을 수정하면 된다.
+
+우리는 /etc/apache2/sites-available/default-ssl.conf를 수정하여 다음과 같은 코드들을 새로 추가했다.
+
+WSGIScriptAlias /api /var/www/illerbachgi/was/wsgi.wsgi
+==> Alias설정. illerbachgi.com/api/~로 들어온 요청을 flask web application을 실행할 수 있는 WSGI서버에게 넘겨준다.
+==> 중요한점. Alias할때 "/api/"로 쓰면 안됨. "/api"로 써야함
+
+WSGIDaemonProcess app threads=3
+==> 안해도 되지만, 최대 thread를 3개로 고정시키기 위해서(CPU Bound) 설정해준다.
+자세한내용은 출처:https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIDaemonProcess.html
+
+공식 Quick Configuration Guide를 통한, 여러가지 세팅들에 대한 출처: https://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html
