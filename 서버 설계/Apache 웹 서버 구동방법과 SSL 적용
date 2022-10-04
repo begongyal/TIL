@@ -54,13 +54,21 @@ IMPORTANT NOTES:
    /etc/letsencrypt/live/illerbachgi.com/privkey.pem
 ...
 
-5. 참고링크(https://nhj12311.tistory.com/250)를 가보면 지금까지 만든 pem 파일들을, 웹 서버에 적용하기 위해서 어떤 작업들을 해야하는지 설명이 나와있지만, nginx 기준으로 쓰여있고, apache2의 경우에는 certbot 홈페이지에 가서 참고하라고 한다. 그러나 우리는 그 방법대로 하지 않고(왜냐하면 홈페이지에서는 snap으로 애초에 certbot을 설치하라고 했기 때문에 이미 지나버려서.) https://blogger.pe.kr/824의 링크를 참고했다.
+5. 참고링크(https://nhj12311.tistory.com/250)를 가보면 지금까지 만든 pem 파일들을, 웹 서버에 적용하기 위해서 어떤 작업들을 해야하는지 설명이 나와있지만,
+nginx 기준으로 쓰여있고, apache2의 경우에는 certbot 홈페이지에 가서 참고하라고 한다. 그러나 우리는 그 방법대로 하지 않고
+(왜냐하면 홈페이지에서는 snap으로 애초에 certbot을 설치하라고 했기 때문에 이미 지나버려서.) https://blogger.pe.kr/824의 링크를 참고했다.
 
-6. blogger 참고 링크의 중간부터 이어서 따라했다. /etc/apache2/sites-available/000-default-ssl.conf 를 복사해서 illerbachgi-ssl.conf로 만들어도 되었겠지만, 그냥 그대로 수정하기로 하고 진행했다. conf파일 중간에 SSLEngine이 on으로 되어있는 것을 확인하고, SSLCertificateFile,KeyFile,ChainFile을 링크 내용 그대로 cert.pem, privkey.pem, chain.pem의 경로로 수정해주었다. (fullchain.pem은 실컷 만들어놓고 왜 안쓰는지는 모르겠음) 그리고 a2ensite로 conf파일 사용하도록 해주고 reload하면 적용이 되어있다.
+6. blogger 참고 링크의 중간부터 이어서 따라했다. /etc/apache2/sites-available/000-default-ssl.conf 를 복사해서 illerbachgi-ssl.conf로 만들어도 되었겠지만,
+그냥 그대로 수정하기로 하고 진행했다. conf파일 중간에 SSLEngine이 on으로 되어있는 것을 확인하고, SSLCertificateFile,KeyFile,ChainFile을 링크 내용 그대로
+cert.pem, privkey.pem, chain.pem의 경로로 수정해주었다. (fullchain.pem은 실컷 만들어놓고 왜 안쓰는지는 모르겠음) 그리고 a2ensite로 conf파일 사용하도록 해주고
+reload하면 적용이 되어있다.
 
 7. Lightsail에서 443 포트를 방화벽에서 열어주었는지도 꼭 확인하자.
 
 
+[Apache2에 와일드카드 SSL 인증서 적용하는 방법(https)]
+위의 내용을 참고해서 아래 링크를 따라하면 된다.
+https://oasisfores.com/letsencrypt-wildcard-ssl-certificate/
 
 
 
