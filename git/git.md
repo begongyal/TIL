@@ -67,3 +67,10 @@ pull 로 가져오든, 아니면 그냥 복사 붙여넣기를 하든지 하고 
 원격 저장소에 있는 A라는 branch, B라는 branch를 둘다 Main이라는 branch에 merge하고 싶으면,  
 Main이라는 branch를 일단 내 로컬 저장소로 가져오고, A와 B도 로컬 저장소로 가져온다.  
 그다음에 로컬 저장소에서 A와 B를 Main에 합병하고 나서, 합병된 Main을 원격저장소에 push 하는 방식으로 하게됨.
+
+
+
+```git fetch --all```
+```git reset --hard origin/master```
+를 하면 github에 올라온 최신버전으로 내 로컬 저장소의 파일들을 강제 업데이트하고싶을때
+폴더 다 삭제하고 새로 clone할 필요 없다.
