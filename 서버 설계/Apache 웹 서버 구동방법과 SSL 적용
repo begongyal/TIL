@@ -80,3 +80,39 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 
 참고: https://oingdaddy.tistory.com/68
 (https://blogger.pe.kr/824는 따라하지말것)
+
+
+
+
+
+[Apache에 테스트 환경 만들기]
+
+리액트 홈페이지를 로컬에서 개발하면 매번 npm run build를 할 필요 없이
+npm start를 한 후 변경 사항을 바로바로 확인할 수 있어 편리하지만,
+실제로 apache 서버에 올렸을 때에도 잘 작동하는지 확인할 필요가 있다.
+
+하지만 illerbachgi.com은 실제로 서비스되고 있으므로, 테스트 환경이 필요하다.
+우리가 가진 서버 컴퓨터는 하나이므로 test.illerbachgi.com으로 요청이 들어오면
+apache가 알아서 우리의 테스트 환경으로 연결시켜줄 수 있도록 만들자.
+
+우선 lightsail로 가서 DNS 레코드를 추가한다.
+test.illerbachgi.com을 우리의 static ip로 연결시켜줄 a record를 추가한다.
+(DNS git 문서 참고)
+
+그리고 /etc/apache2/sites-available로 가서 conf 파일을 수정한다.
+현재 443(https)포트를 담당하는 conf 파일인 default-ssl.conf 파일을 연다.
+<VirtualHost _default_:443>
+~
+~
+</VirtualHost>
+하고 현재 서비스하고 있는 설정이 있을 텐데, 우선 그 아래에 똑같이 VirtualHost 블럭을 만든다. 그리고
+ServerName test.illerbachgi.com
+DocumentRoot /var/www/test/build
+를 추가한다.
+
+WSGI나 SSL 설정은 위를 참고해도 되고, 본 repo에 다른 글을 참고해도 된다.
+
+Q. 새로운 conf 파일 만들어서 a2ensite 하면 안되나요?
+> 예를 들어 test.conf를 만들어서 a2ensite 했다고 치자.
+   그러면 illerbachgi.com과 test.illerbachgi.com 둘 다 적용이 안되고
+   둘 중 하나면 적용이 된다. 한 파일에 다 설정하면 둘 다 적용이 된다.
