@@ -1,0 +1,42 @@
+SPA의 특성상 메인페이지에서 상세페이지로 넘어간 후에 (url이 ~.com/~ 상태에서) 새로고침을 하면 404 not found 에러가 나타난다.
+이러한 일이 발생하는 이유를 간단하게 설명하면,
+SPA에서 어떤 url로 보내주는 것은 서버에 요청 없이 그렇게 보이게 한 것이지만,
+새로고침을 하거나 직접 url을 입력해서 접근하려고 하면 서버에 요청을 한다.
+하지만 SPA는 메인 페이지인 ~.com에 대해서만 답변을 하도록 되어있기 때문에,
+~.com/~에 대해서는 답변을 할 수 없어 404 not found 에러가 발생하는 것이다.
+조금 더 자세한 설명은 
+https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
+에서 1700개 정도의 추천과 초록 체크를 받은 답변에서 찾아볼 수 있다.
+
+그래서, 이 문제를 어떻게 해결할 수 있을까?
+위에서 언급한 1700개의 추천을 받은 답변에서는 
+Hash History, Catch-all, Hybrid, Isomorphic의 네 가지 방법을 설명하고 있다.
+답변자는 Isomorphic을 가장 추천한다고 하지만, node.js를 사용하는 경우에만
+적용할 수 있는 방법이므로, 우리는 우선 Catch-all 방법을 사용하기로 했다.
+
+결론만 얘기하면, 우리의 서버 컴퓨터의 /etc/apache2/sites-available에서
+default-ssl.conf에서 VirtualHost 블럭 안에
+
+<Directory "{DocumentRoot 경로}">
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule . /index.html [L]
+</Directory>
+
+를 추가하면 해결된다.
+
+이 답을 얻기 위해서 하루를 소비했다. 그동안 겪은 시행착오를 알려주자면,
+1. .htaccess를 사용하는 방법은 소용이 없었다.
+2. Directory 블럭은 왜 쓰는가?
+  Directory 블럭 없이 conf 파일에 rewrite 관련 설정을 쓰면 apachectl configtest에서
+  rewrite ~ per directory ~ 하는 에러가 발생한다.
+  정확히 무슨 의미인지는 모르겠지만, Directory 블럭을 쓰면 해결된다.
+3. unexpected token '<'
+  Rewrite 설정을 잘 못 적으면 브라우저에서 하얀 화면만 나오면서 확인할 수 있는 에러다.
+  이 에러를 해결하기 위해서 index.html에 script="text/babel"도 넣어보고
+  이것 저것 해봤지만 소용이 없었다.
+  그냥 rewrite 설정을 위처럼 바꿨더니 사라졌다.
