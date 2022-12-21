@@ -1,0 +1,20 @@
+0. Javascript에서도 mutable과 immutable이 있다. 이거를 Primitive, Reference Type이라고 부른다. (Python과 동일하게 string, number, boolean 등이 primitive)
+
+1. state를 사용할 때, 아무리 setter함수(setState)를 쓰더라도 그 state가 갖고 있던 주소가 바뀌어야 re-render한다. 예를 들어, const [a, setA] = useState([]); 해놓고
+a.append(1); 하고나서 setA(a)해봤자 새로 render 안해준다. 주소가 바뀌어야 re-render한다는 말은 immutable일때는 애초에 값이 바뀌면 주소가 바뀌므로 re-render하는 것임.
+그러면 반대로 setter함수를 안써도 re-render할수있는지 궁금할수 있는데, immutable한 객체라고 하면 애초에 const [a, setA] 처럼 정의한 이상 const라서 setter함수 말고는
+바꿀 수 있는 방법이 없고, mutable한 객체라고하면 물론 a[1] = 'b' 하는거처럼 assignment를 할 수는 있는데 그렇게 해봤자 주소가 바뀐게 아니라서 바뀐걸로 인식 안함. 즉, 
+re-render 안함.
+
+2. 1번에서 말한 내용이 setter함수를 쓰더라도 re-render가 되지 않는 경우를 설명한 것이지, mutable한 state가 a.append(1), a[1] = 'b' 같은걸 했을때 값이 안바뀐다는 것을
+의미하는 건 아니다. 값이 바뀌긴 하기 때문에, render는 당장 안될지라도, 나중에 모종의 이유로 다시 render되어야 하는 상황이오면 바뀐 정보로 render할 것이다. 그래서 일반적으로는
+mutable한 state의 일부분을 수정해서 re-render 되도록 하고 싶으면, 주소값을 바꿔주기 위해 spread operator나 map 등을 쓴다. 얘네 둘은 새로운 객체를 만들어내기 때문에
+새로운 주소값을 갖는다.
+
+3. React에서 자식에게 props로 variable을 넘겨주고, 자식이 그 props를 a = props.a;를 통해 받아가는 방식은, js나 python의 function call과 동일하다.
+
+4. React에서 props는 READONLY이다. 그러니까, props.a = 3;을 하면 READONLY 객체에 쓰라고 하는 격이라서 안된다. 하지만 3번에서 말한거처럼 a = props.a;로 한 경우에는
+a는 props.a와 같은걸 가리키는 복사본일 뿐이라서 바꿀 수 있다. 이때, a가 immutable이었다면, const a = props.a한 경우에는 당연히 못바꾸는 거고, let a = props.a 였으면
+a를 바꿀수는 있는데 그렇다고 props.a가 바뀌지는 않는다. 그리고 만약 a가 mutable이었다고 하더라도 const a = props.a였으면 a에 바로 assignment하는건 당연히 안되고
+a.append 같이 안에 있는 내용을 바꾸라고 하는 경우에는 props.a의 내용도 바뀐다. 그리고 let a = props.a였으면 나중에 a에다가 바로 assignment 해버리면 그냥 이때부터는
+a랑 props.a랑 아무 연관이 없어지는 서로 다른 객체를 가리키게 되는 것.
