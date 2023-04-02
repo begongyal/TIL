@@ -70,10 +70,13 @@ reload하면 적용이 되어있다.
 위의 내용을 참고해서 아래 링크를 따라하면 되고 구체적인 방법은 다음과 같다.
 https://oasisfores.com/letsencrypt-wildcard-ssl-certificate/
 
-certbot 설치는 위에 1번 내용대로 하면되고(아마도)
+certbot 설치는 위에 1번 내용대로 하면되고(아마도. 그리고 지금은 이미 되어있음)
 아무튼 begongyal 아이디에 설치가 되어있으므로 접속해서 어떤 디렉토리에서든 상관없이(왜냐면 와일드카드니까)
-certonly --manual -d *.example.com -d example.com --preferred-challenges dns
-를 입력한다.
+certbot certonly --manual -d *.example.com -d example.com --preferred-challenges dns
+를 입력하라고 한다.
+우리로 치면 begongyal 아이디에서
+sudo certbot certonly --manual -d *.illerbachgi.com -d illerbachgi.com --preferred-challenges dns
+를 입력하는 것.
 입력하면 총 2번 우리 도메인에 txt record를 추가하라고 한다.
 
 Please deploy a DNS TXT record under the name
